@@ -400,6 +400,8 @@ As análises utilizam os registros válidos da camada Gold.
 
 ### P1 — Como evoluíram a frequência das interrupções e a energia não suprida?
 
+Nesta análise, a frequência corresponde à quantidade de registros válidos de interrupção por ano, e não à quantidade de códigos distintos de perturbação.
+
 A quantidade de registros e a ENS não evoluem necessariamente de forma proporcional.
 
 - **2023:** maior frequência anual, com 573 registros e 63.958,83 MWh de ENS.
@@ -416,11 +418,19 @@ O ano de 2026 é parcial e não foi tratado como equivalente a um ano completo.
 
 A visualização evidencia a oscilação da ENS ao longo da série histórica, com picos relevantes em 2009 e 2020. O ano de 2026 apresenta dados parciais e não deve ser comparado diretamente com anos completos.
 
+**Figura 10 — Evolução anual da frequência de registros e da energia não suprida.**
+
+![Tabela anual com quantidade de registros, perturbações distintas e ENS](docs/evidencias/16_analise_p1_tabela.png)
+
+A tabela complementa a Figura 10 ao apresentar, lado a lado, a frequência dos registros e a ENS acumulada em cada ano.
+
 ### P2 — Quais estados e subsistemas concentram os maiores impactos?
 
 São Paulo apresentou a maior ENS acumulada entre os estados, com **117.406,88 MWh**.
 
 O Amapá apresentou **88.038,08 MWh em 108 registros**, com forte influência de uma ocorrência individual de 77.509,63 MWh.
+
+São Paulo também apresentou a maior soma de carga interrompida entre os estados, com **98.000,14 MW** registrados. Assim, no recorte analisado, o estado lidera tanto a ENS acumulada quanto a soma das cargas interrompidas. Esses indicadores representam grandezas diferentes: a carga interrompida expressa potência (MW), enquanto a ENS expressa energia (MWh).
 
 O Rio Grande do Sul apresentou a maior quantidade de registros entre os estados, com 1.020, mas não a maior ENS.
 
@@ -433,19 +443,27 @@ Por subsistema:
 | Nordeste | 1.318 | 203.725,38 |
 | Sul | 1.442 | 83.991,71 |
 
+A comparação da soma das cargas interrompidas por subsistema é apresentada na Figura 11, em conjunto com a frequência de registros e a ENS acumulada. Esses indicadores permitem avaliar a distribuição dos impactos sob perspectivas complementares, sem pressupor que a participação na carga interrompida seja proporcional à participação na ENS.
+
 As comparações representam valores absolutos, sem normalização pela carga atendida, quantidade de consumidores ou extensão da rede.
 
-**Figura 10 — Energia não suprida acumulada por unidade federativa.**
+**Figura 11 — Energia não suprida acumulada por unidade federativa.**
 
 ![Comparação da energia não suprida acumulada por estado](docs/evidencias/10_analise_p2_estado.png)
 
 A distribuição por estado evidencia diferenças na magnitude acumulada das interrupções, com destaque para São Paulo e Amapá.
 
-**Figura 11 — Distribuição dos indicadores de interrupção por subsistema.**
+**Figura 12 — Distribuição dos indicadores de interrupção por subsistema.**
 
 ![Participação dos subsistemas na quantidade de registros, carga interrompida e energia não suprida](docs/evidencias/11_analise_p2_subsistema.png)
 
 Os gráficos apresentam a participação relativa de cada subsistema na quantidade de registros, na soma da carga interrompida e na ENS acumulada. A comparação mostra que a distribuição dos registros não é necessariamente proporcional à distribuição dos impactos energéticos.
+
+**Figura 13 — Indicadores de interrupção por subsistema.**
+
+![Tabela por subsistema com quantidade de registros, soma da carga interrompida e ENS](docs/evidencias/17_analise_p2_carga.png)
+
+A tabela apresenta os valores absolutos dos três indicadores utilizados na comparação geográfica, complementando os percentuais da Figura 11.
 
 ### P3 — Como varia o tempo de recomposição?
 
@@ -457,7 +475,7 @@ Por subsistema, o Sul apresentou a maior média (**103,19 minutos**), enquanto o
 
 A análise conjunta de média e mediana evita que ocorrências excepcionais sejam confundidas com o comportamento central dos registros.
 
-**Figura 12 — Indicadores de tempo médio, mediano e máximo de recomposição por unidade federativa.**
+**Figura 14 — Indicadores de tempo médio, mediano e máximo de recomposição por unidade federativa.**
 
 ![Comparação dos indicadores de tempo médio, mediano e maior tempo de recomposição por estado](docs/evidencias/12_analise_p3.png)
 
@@ -478,7 +496,7 @@ Os registros com envolvimento da Rede Básica apresentaram maiores valores médi
 
 Trata-se de comparação descritiva, sem inferência de causalidade.
 
-**Figura 13 — Comparação dos indicadores segundo o envolvimento da Rede Básica.**
+**Figura 15 — Comparação dos indicadores segundo o envolvimento da Rede Básica.**
 
 ![Participação dos registros com e sem envolvimento da Rede Básica nos indicadores de carga, tempo e ENS](docs/evidencias/13_analise_p4.png)
 
@@ -494,11 +512,19 @@ Novembro apresentou a maior ENS acumulada, com **202.462,71 MWh**.
 
 A matriz ano × mês mostrou que parte desse volume está concentrada em períodos excepcionais, como novembro de 2009 e novembro de 2020. Portanto, os picos mensais de ENS não devem ser interpretados automaticamente como um padrão sazonal recorrente.
 
-**Figura 14 — Distribuição mensal dos registros de interrupção.**
+**Figura 16 — Distribuição mensal dos registros de interrupção.**
 
 ![Distribuição dos registros por mês e indicador de média anual](docs/evidencias/14_analise_p5.png)
 
 A visualização permite comparar a frequência de registros entre os meses, destacando outubro como o mês de maior volume acumulado no período analisado. A interpretação da sazonalidade também considera os resultados de ENS e a concentração de eventos excepcionais descritos nesta subseção.
+
+Os dados evidenciam diferenças na distribuição mensal dos registros e da ENS. Entretanto, a concentração de impactos em eventos excepcionais não permite afirmar, apenas com esses agregados, a existência de um padrão sazonal estável e recorrente.
+
+**Figura 17 — Indicadores mensais de frequência e energia não suprida.**
+
+![Tabela mensal com quantidade de registros, médias anuais e energia não suprida](docs/evidencias/18_analise_p5_tabela.png)
+
+A tabela complementa a Figura 14 ao apresentar a ENS mensal, permitindo comparar a distribuição da frequência com a magnitude energética dos registros.
 
 ### P6 — Quais perturbações concentraram os maiores impactos energéticos?
 
@@ -516,7 +542,7 @@ O código `0672/2011` possui data registrada em 2009. Por isso, seu impacto inte
 
 A concentração ocorre tanto em perturbações de ampla abrangência quanto em registros individuais de longa duração.
 
-**Figura 15 — Perturbações com maior energia não suprida acumulada.**
+**Figura 18 — Perturbações com maior energia não suprida acumulada.**
 
 ![Ranking das perturbações por ENS, com quantidade de registros, estados e agentes envolvidos](docs/evidencias/15_analise_p6.png)
 
