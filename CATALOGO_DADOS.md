@@ -1,6 +1,6 @@
 # Catálogo de Dados — MVP ONS
 
-Este documento descreve o modelo implementado nos notebooks da branch `main` e complementa o README. **Catálogo:** `ons_energia`; **schemas:** `bronze`, `silver` e `gold`; **formato de persistência:** Delta Lake. Tipos descritos são os definidos pelo código (ou os resultantes de suas expressões Spark); confirme a materialização com `DESCRIBE TABLE` no ambiente de execução. As chaves são lógicas, com validações no pipeline, sem declaração de constraints físicas de FK.
+Este documento descreve o modelo implementado nos notebooks da branch `main` e complementa o README. **Catálogo:** `ons_energia`; **schemas:** `bronze`, `silver` e `gold`; **formato de persistência:** Delta Lake. Os tipos apresentados correspondem aos esquemas definidos ou derivados pelas transformações implementadas nos notebooks. Os esquemas físicos das tabelas persistidas podem ser consultados no Databricks por meio do comando DESCRIBE TABLE. As chaves são lógicas, com validações no pipeline, sem declaração de constraints físicas de FK.
 
 ## 1. Bronze — `ons_energia.bronze.bronze_interrupcao_carga`
 
@@ -133,7 +133,7 @@ Este documento descreve o modelo implementado nos notebooks da branch `main` e c
 | `qualidade_outliers` | Medida avaliada | Quartis, intervalo interquartil, limites e contagem de extremos. |
 | `qualidade_granularidade` | Código de perturbação | Registros, diversidade de agentes/UF/ENS e totais por perturbação. |
 
-As colunas dessas tabelas são derivadas dos agregados implementados no notebook [`04_qualidade_dados.ipynb`](04_qualidade_dados.ipynb); para obter tipos físicos e lista completa da versão persistida, executar `DESCRIBE TABLE` no Databricks.
+Essas tabelas armazenam os resultados das verificações implementadas no notebook 04_qualidade_dados.ipynb. Seus esquemas físicos podem ser consultados diretamente no Unity Catalog do Databricks.
 
 ## 4. Regras, relacionamentos e reconciliação
 
