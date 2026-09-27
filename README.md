@@ -18,9 +18,28 @@ Os objetivos específicos são:
 - Responder a seis perguntas de negócio por meio de consultas SQL.
 - Documentar as decisões técnicas e as limitações dos resultados.
 
+### Perguntas de negócio planejadas
+
+1. **P1:** Como evoluíram a frequência das interrupções e a energia não suprida ao longo dos anos?
+2. **P2:** Quais estados e subsistemas concentram os maiores volumes de carga interrompida e energia não suprida?
+3. **P3:** Como varia o tempo médio de recomposição entre estados e subsistemas?
+4. **P4:** Como diferem as interrupções que envolveram ou não a Rede Básica?
+5. **P5:** Existe comportamento mensal ou sazonal na frequência e magnitude das interrupções?
+6. **P6:** Quais perturbações concentraram os maiores volumes de energia não suprida?
+
+As respostas, consultas e limitações são apresentadas na seção 6 e no notebook [`05_analise_final.ipynb`](05_analise_final.ipynb).
+
 ## 2. Fonte de dados
 
 **Fonte:** Operador Nacional do Sistema Elétrico (ONS).
+
+**Fonte oficial e recursos:** [Conjunto Interrupção de Carga — ONS Dados Abertos](https://dados.ons.org.br/dataset/interrupcao_carga), incluindo [recurso CSV](https://dados.ons.org.br/dataset/interrupcao_carga/resource/e87dfb42-d713-41b6-81d3-df21d3caab31) e [dicionário JSON](https://dados.ons.org.br/dataset/interrupcao_carga/resource/cbda0486-fc65-46be-b0b1-d04174cd7eda).
+
+**Coleta e recorte:** foi utilizada uma cópia do CSV público, disponibilizada manualmente no Volume do Databricks. A versão analisada possui 8.326 linhas e última ocorrência em 01/09/2026. **Data exata do download original: não registrada na documentação do projeto; preencher com o registro real, caso disponível.** O portal mantém atualizações do conjunto; uma nova extração poderá apresentar contagens diferentes. O arquivo e o dicionário foram consultados como referência da fonte, mas não estão versionados neste repositório.
+
+**Procedimento de obtenção:** acessar o conjunto oficial, abrir o recurso CSV e baixar o arquivo; consultar o dicionário no mesmo portal. No Databricks, criar/verificar o Volume com `00_configuracao`, enviar o CSV para `/Volumes/ons_energia/bronze/arquivos_ons/INTERRUPCAO_CARGA.csv` e executar `01_ingestao_bronze`. A ingestão usa CSV UTF-8, separador `;`, cabeçalho e esquema explícito. O nome local é o esperado pelo notebook.
+
+
 
 **Conjunto utilizado:** Interrupção de Carga.
 
@@ -58,27 +77,7 @@ O código `cod_perturbacao` identifica a perturbação na fonte. Uma mesma pertu
 
 A solução utiliza a arquitetura Medallion, com três camadas de dados.
 
-```text
-Arquivo CSV público do ONS
-          |
-          v
-       BRONZE
-  Ingestão e rastreabilidade
-          |
-          v
-       SILVER
- Padronização, deduplicação,
- validação e quarentena
-          |
-          v
-        GOLD
-   Esquema estrela e
- tabelas de qualidade
-          |
-          v
-  Consultas analíticas SQL
-      Perguntas P1–P6
-```
+![Arquitetura Medallion do MVP](docs/arquitetura_medallion.png)
 
 O catálogo utilizado no Databricks é `ons_energia`, com os schemas `bronze`, `silver` e `gold`.
 
@@ -127,6 +126,10 @@ A tabela `ons_energia.gold.fato_interrupcao` contém 8.309 registros, com chaves
 As dimensões permitem consultar as medidas sob diferentes perspectivas sem repetir a lógica de tratamento dos dados.
 
 A solução também mantém tabelas auxiliares com evidências de qualidade, incluindo completude, identificação de valores extremos e avaliação da granularidade.
+
+![Esquema estrela da camada Gold](docs/modelo_dimensional.png)
+
+O dicionário de tabelas, atributos, tipos, chaves, granularidade e regras está em [`CATALOGO_DADOS.md`](CATALOGO_DADOS.md). As chaves documentadas são lógicas e verificadas por testes no código; não se pressupõe a criação de restrições físicas de chave estrangeira.
 
 ## 5. Qualidade e reconciliação dos dados
 
@@ -250,22 +253,22 @@ A implementação foi dividida em etapas sequenciais:
 
 | Notebook | Finalidade |
 |---|---|
-| `00_configuracao` | Configuração inicial do catálogo, schemas e caminhos |
-| `01_ingestao_bronze` | Leitura da fonte e ingestão rastreável |
-| `02_refino_silver` | Conversão, padronização, deduplicação e quarentena |
-| `03_modelagem_gold` | Criação do esquema estrela |
-| `04_qualidade_dados` | Validações e reconciliação das camadas |
-| `05_analise_final` | Consultas SQL e respostas às seis perguntas |
+| [`00_configuracao`](00_configuracao.ipynb) | Configuração inicial do catálogo, schemas e caminhos |
+| [`01_ingestao_bronze`](01_ingestao_bronze.ipynb) | Leitura da fonte e ingestão rastreável |
+| [`02_refino_silver`](02_refino_silver.ipynb) | Conversão, padronização, deduplicação e quarentena |
+| [`03_modelagem_gold`](03_modelagem_gold.ipynb) | Criação do esquema estrela |
+| [`04_qualidade_dados`](04_qualidade_dados.ipynb) | Validações e reconciliação das camadas |
+| [`05_analise_final`](05_analise_final.ipynb) | Consultas SQL e respostas às seis perguntas |
 
 Para reproduzir o projeto:
 
-1. Disponibilize o arquivo CSV e o dicionário de dados em um Volume acessível no Databricks.
+1. Obtenha o CSV no [portal oficial do ONS](https://dados.ons.org.br/dataset/interrupcao_carga), consulte o dicionário e carregue o CSV no Volume `/Volumes/ons_energia/bronze/arquivos_ons/` com o nome `INTERRUPCAO_CARGA.csv`. O arquivo não está incluído no GitHub.
 2. Revise os caminhos e identificadores definidos em `00_configuracao`.
 3. Execute os notebooks na ordem apresentada.
 4. Confira os resultados de reconciliação em `04_qualidade_dados`.
 5. Execute `05_analise_final` para consultar os indicadores e visualizar as análises.
 
-O ambiente de execução deve permitir o uso de Spark, Delta Lake e Unity Catalog.
+O ambiente de execução deve permitir o uso de Spark, Delta Lake e Unity Catalog. A ingestão e as tabelas derivadas são gravadas por **carga integral com `overwrite`**; não há atualização incremental nem agendamento automático nesta versão. As contagens esperadas correspondem ao recorte da fonte utilizado no MVP.
 
 **Importante:** o GitHub versiona o código e a documentação. As tabelas Delta e os arquivos armazenados no Volume permanecem no ambiente de dados e não são recriados apenas pela clonagem do repositório.
 
@@ -280,15 +283,17 @@ O ambiente de execução deve permitir o uso de Spark, Delta Lake e Unity Catalo
 - As comparações geográficas não foram normalizadas por características dos sistemas.
 - Os resultados são descritivos e não permitem atribuir automaticamente causas aos eventos.
 
-## 9. Aprendizados e competências demonstradas
+## 9. Autoavaliação do projeto
 
-O MVP reúne práticas de engenharia e análise de dados, incluindo ingestão rastreável, arquitetura Medallion, tratamento de dados, modelagem dimensional, validação de qualidade, consultas analíticas e documentação técnica.
+Considero que os objetivos propostos para este MVP foram alcançados dentro do escopo acadêmico. Foi desenvolvida uma solução de engenharia de dados no Databricks, utilizando a arquitetura Medallion, com ingestão, tratamento, validação e modelagem dimensional dos registros de interrupção de carga do ONS. As seis perguntas de negócio foram respondidas por meio de consultas SQL, permitindo explorar os impactos energéticos, temporais, geográficos e operacionais das interrupções.
 
-O projeto também demonstra a importância de preservar a granularidade original, explicitar regras de negócio e documentar limitações antes de interpretar indicadores agregados.
+O desenvolvimento exigiu atenção especial à granularidade dos registros, ao tratamento de duplicatas, à identificação de dados inválidos e à interpretação de valores extremos. Essas decisões reforçaram a importância de compreender o contexto dos dados antes de transformá-los. Como limitações, destacam-se a carga integral sem automatização do pipeline e a cobertura parcial dos dados de 2026, aspectos que poderão ser aprimorados em evoluções futuras.
+
+O projeto foi elaborado com o auxílio de ferramentas de inteligência artificial generativa, utilizadas como apoio ao aprendizado, à elaboração e revisão de códigos, à documentação e à análise dos resultados. As sugestões foram avaliadas e ajustadas conforme os requisitos do trabalho e os resultados obtidos no Databricks. A execução, as decisões técnicas e a validação final permaneceram sob minha responsabilidade. Essa experiência contribuiu para o desenvolvimento de competências em engenharia de dados e reforçou a importância do uso crítico e responsável da inteligência artificial.
 
 ## 10. Referência da fonte
 
-Operador Nacional do Sistema Elétrico (ONS) — conjunto público de dados de Interrupção de Carga e respectivo dicionário de dados.
+Operador Nacional do Sistema Elétrico (ONS) — [Interrupção de Carga](https://dados.ons.org.br/dataset/interrupcao_carga), [recurso CSV](https://dados.ons.org.br/dataset/interrupcao_carga/resource/e87dfb42-d713-41b6-81d3-df21d3caab31) e [dicionário JSON](https://dados.ons.org.br/dataset/interrupcao_carga/resource/cbda0486-fc65-46be-b0b1-d04174cd7eda).
 
 Consulte os canais oficiais de dados abertos do ONS para obter a versão atualizada da fonte.
 
