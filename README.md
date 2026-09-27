@@ -27,7 +27,7 @@ Os objetivos específicos são:
 5. **P5:** Existe comportamento mensal ou sazonal na frequência e magnitude das interrupções?
 6. **P6:** Quais perturbações concentraram os maiores volumes de energia não suprida?
 
-As respostas, consultas e limitações são apresentadas na seção 6 e no notebook [`05_analise_final.ipynb`](05_analise_final.ipynb).
+As respostas, consultas e limitações são apresentadas na seção 7 e no notebook [`05_analise_final.ipynb`](05_analise_final.ipynb).
 
 ### Estrutura dos dados brutos
 
@@ -457,7 +457,7 @@ Por subsistema, o Sul apresentou a maior média (**103,19 minutos**), enquanto o
 
 A análise conjunta de média e mediana evita que ocorrências excepcionais sejam confundidas com o comportamento central dos registros.
 
-**Figura 12 — Indicadores de tempo de médio e mediana de recomposição por unidade federativa.**
+**Figura 12 — Indicadores de tempo médio, mediano e máximo de recomposição por unidade federativa.**
 
 ![Comparação dos indicadores de tempo médio, mediano e maior tempo de recomposição por estado](docs/evidencias/12_analise_p3.png)
 
